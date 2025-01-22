@@ -4,12 +4,6 @@
   "installCommand": "npm install",
   "framework": "nextjs",
   "regions": ["iad1"],
-  "env": {
-    "MISTRAL_API_KEY": "@mistral_api_key",
-    "SUPABASE_URL": "@supabase_url",
-    "SUPABASE_ANON_KEY": "@supabase_anon_key",
-    "NEXT_PUBLIC_APP_URL": "@next_public_app_url"
-  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
   ]
