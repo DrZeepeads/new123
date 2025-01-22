@@ -1,25 +1,32 @@
 import { AIModel } from '@/types/settings'
+import { MistralClient } from '@mistralai/mistralai';
 
-const MISTRAL_API_ENDPOINT = 'https://api.mistral.ai/v1/chat/completions'
+const client = new MistralClient(process.env.MISTRAL_API_KEY!);
 
-export async function generateMistralResponse(messages: { role: string; content: string }[], model: AIModel, apiKey: string) {
-  const response = await fetch(MISTRAL_API_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: model === 'mistral' ? 'mistral-tiny' : model, // You may need to adjust this based on Mistral's available models
+export async function streamChat(messages: any[]) {
+  try {
+    const chatStream = await client.chatStream({
+      model: 'mistral-medium',
       messages: messages,
-    }),
-  })
+    });
 
-  if (!response.ok) {
-    throw new Error(`Mistral API error: ${response.statusText}`)
+    return chatStream;
+  } catch (error) {
+    console.error('Error in Mistral API:', error);
+    throw error;
   }
-
-  const data = await response.json()
-  return data.choices[0].message.content
 }
 
+export async function generateResponse(messages: any[]) {
+  try {
+    const response = await client.chat({
+      model: 'mistral-medium',
+      messages: messages,
+    });
+
+    return response;
+  } catch (error) {
+    console.error('Error in Mistral API:', error);
+    throw error;
+  }
+}
